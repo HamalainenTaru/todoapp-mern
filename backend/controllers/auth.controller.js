@@ -23,9 +23,13 @@ const signup = async (request, response, next) => {
       return response.status(400).json({ error: "Passwords do not match" });
     }
 
+    const pic = `https://avatar.iran.liara.run/username?username=${username}`;
+
     response
       .status(201)
-      .json(await User.CreateUser({ name, username, password }));
+      .json(
+        await User.CreateUser({ name, username, password, profilePic: pic })
+      );
   } catch (error) {
     next(error);
   }
