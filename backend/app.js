@@ -4,6 +4,9 @@ const cors = require("cors");
 
 const config = require("./utils/config");
 const logger = require("./utils/logger");
+const middleware = require("./middleware/middleware");
+
+const authRoutes = require("./routes/auth.route");
 
 const app = express();
 
@@ -21,5 +24,10 @@ mongoose
 
 app.use(express.json());
 app.use(cors());
+
+app.use("/api/auth", authRoutes);
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;
