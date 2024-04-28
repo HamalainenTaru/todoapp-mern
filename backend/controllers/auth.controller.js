@@ -1,17 +1,41 @@
 const User = require("../models/user.model");
+const { error } = require("../utils/logger");
 
 const signup = async (request, response, next) => {
   try {
     const { name, username, password, confirmPassword } = request.body;
 
+    if (await User.findByUsername(username)) {
+      const error = new Error();
+      error.name = "ValidationError";
+      error.errors = {
+        username: {
+          message: "Username is not available",
+        },
+      };
+      return next(error);
+    }
+
     if (!confirmPassword) {
       const error = new Error();
       error.name = "ValidationError";
+      error.errors = {
+        confirmPassword: {
+          message: "Confirm password is required",
+        },
+      };
       return next(error);
     }
 
     if (!(await User.validatePassword(password))) {
-      return response.status(400).json({ error: "Invalid password" });
+      const error = new Error();
+      error.name = "ValidationError";
+      error.errors = {
+        password: {
+          message: "Invalid password",
+        },
+      };
+      return next(error);
     }
 
     if (
@@ -20,7 +44,17 @@ const signup = async (request, response, next) => {
         confirmPassword
       ))
     ) {
-      return response.status(400).json({ error: "Passwords do not match" });
+      const error = new Error();
+      error.name = "ValidationError";
+      error.errors = {
+        password: {
+          message: "Passwords don't match",
+        },
+        confirmPassword: {
+          message: "Passwords don't match",
+        },
+      };
+      return next(error);
     }
 
     const pic = `https://avatar.iran.liara.run/username?username=${username}`;

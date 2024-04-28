@@ -46,8 +46,8 @@ userSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-userSchema.statics.findByEmail = function (email) {
-  return this.findOne({ email: email });
+userSchema.statics.findByUsername = function (username) {
+  return this.findOne({ username: username });
 };
 
 userSchema.statics.validatePassword = function (password) {
