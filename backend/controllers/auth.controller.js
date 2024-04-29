@@ -1,20 +1,10 @@
+const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
-const { error } = require("../utils/logger");
+const config = require("../utils/config");
 
 const signup = async (request, response, next) => {
   try {
     const { name, username, password, confirmPassword } = request.body;
-
-    if (await User.findByUsername(username)) {
-      const error = new Error();
-      error.name = "ValidationError";
-      error.errors = {
-        username: {
-          message: "Username is not available",
-        },
-      };
-      return next(error);
-    }
 
     if (!confirmPassword) {
       const error = new Error();
@@ -22,6 +12,17 @@ const signup = async (request, response, next) => {
       error.errors = {
         confirmPassword: {
           message: "Confirm password is required",
+        },
+      };
+      return next(error);
+    }
+
+    if (await User.findByUsername(username)) {
+      const error = new Error();
+      error.name = "ValidationError";
+      error.errors = {
+        username: {
+          message: "Username is not available",
         },
       };
       return next(error);
@@ -70,7 +71,41 @@ const signup = async (request, response, next) => {
 };
 
 const login = async (request, response, next) => {
-  response.send("login");
+  try {
+    const { username, password } = request.body;
+
+    const user = await User.findByUsername(username);
+
+    if (!user) {
+      const error = new Error();
+      error.name = "ValidationError";
+      error.errors = {
+        username: {
+          message: "user not found",
+        },
+      };
+      return next(error);
+    }
+
+    const passwordMatch = await user.comparePassword(password);
+    if (!passwordMatch) {
+      const error = new Error();
+      error.name = "ValidationError";
+      error.errors = { password: { message: "Invalid password" } };
+      return next(error);
+    }
+
+    const userForToken = {
+      id: user.id,
+    };
+
+    const token = jwt.sign(userForToken, config.JWT_SECRET, {
+      expiresIn: 60 * 60,
+    });
+    response.status(200).json({ token, user });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = { signup, login };

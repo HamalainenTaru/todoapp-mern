@@ -11,12 +11,15 @@ import {
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import authService from "../services/auth.service";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthenticationForm({ type, setTabIndex }) {
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
   });
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -30,8 +33,27 @@ export default function AuthenticationForm({ type, setTabIndex }) {
 
   const isRegister = type === "register";
 
-  const onLogin = () => {
-    console.log(authData);
+  const onLogin = async () => {
+    try {
+      const user = {
+        username: authData.username,
+        password: authData.password,
+      };
+
+      const loggedInUser = await authService.login(user);
+      console.log(loggedInUser);
+      navigate("/main");
+    } catch (error) {
+      if (error.response.data.errors) {
+        for (const [key, message] of Object.entries(
+          error.response.data.errors
+        )) {
+          setError(key, { type: "manual", message: message });
+        }
+      } else {
+        console.log(error);
+      }
+    }
   };
 
   const onRegister = async () => {
