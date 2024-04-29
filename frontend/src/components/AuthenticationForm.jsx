@@ -9,9 +9,10 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import authService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import userContenxt from "../userContenxt";
 
 export default function AuthenticationForm({ type, setTabIndex }) {
   const [showPassword, setShowPassword] = useState({
@@ -32,6 +33,7 @@ export default function AuthenticationForm({ type, setTabIndex }) {
   const authData = watch();
 
   const isRegister = type === "register";
+  const { setUser } = useContext(userContenxt);
 
   const onLogin = async () => {
     try {
@@ -41,7 +43,8 @@ export default function AuthenticationForm({ type, setTabIndex }) {
       };
 
       const loggedInUser = await authService.login(user);
-      console.log(loggedInUser);
+      setUser(loggedInUser.user);
+
       navigate("/main");
     } catch (error) {
       if (error.response.data.errors) {
