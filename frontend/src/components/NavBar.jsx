@@ -9,11 +9,20 @@ import {
   MenuDivider,
   Button,
 } from "@chakra-ui/react";
-import userContenxt from "../userContenxt";
 import { useContext } from "react";
+import UserContext from "../global/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
-  const { user } = useContext(userContenxt);
+  const { user, setUser } = useContext(UserContext);
+
+  const navigate = useNavigate();
+
+  const onLogout = () => {
+    setUser(null);
+    window.localStorage.removeItem("user");
+    navigate("/");
+  };
   return (
     <Box
       display={"flex"}
@@ -24,7 +33,9 @@ export default function NavBar() {
       shadow={"lg"}
       rounded={"lg"}
     >
-      <Text fontSize={"xl"}>Welcome {user?.username}</Text>
+      <Text fontSize={"xl"}>
+        Welcome <span style={{ fontWeight: "bold" }}>{user.username}</span>
+      </Text>
 
       <Menu>
         <MenuButton
@@ -36,14 +47,14 @@ export default function NavBar() {
             size={"sm"}
             cursor={"pointer"}
             name="test"
-            src={user?.profilePic}
+            src={user.profilePic}
           />
         </MenuButton>
 
         <MenuList>
           <MenuItem>My Profile</MenuItem>
           <MenuDivider />
-          <MenuItem>Logout</MenuItem>
+          <MenuItem onClick={onLogout}>Logout</MenuItem>
         </MenuList>
       </Menu>
     </Box>
