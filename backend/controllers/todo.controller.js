@@ -9,7 +9,7 @@ const getAllTodosByUser = async (request, response, next) => {
   try {
     const user = request.user;
 
-    const todos = await Todo.findByUser(user._id);
+    const todos = await Todo.findByUser(user._id).sort({ createdAt: -1 });
 
     response.status(200).json(todos);
   } catch (error) {
@@ -63,7 +63,7 @@ const createTodo = async (request, response, next) => {
 
 /*
 Method: DELETE
-Path: /api/todo/delete/:id
+Path: /api/todo/:id
 Access: protected
 */
 const deleteTodo = async (request, response, next) => {
@@ -88,7 +88,27 @@ Method: PUT
 Path: /api/todo/update/:id
 Access: protected
 */
-const updateTodo = async (request, response, next) => {};
+const updateTodo = async (request, response, next) => {
+  try {
+    const id = request.params.id;
+    const todo = await Todo.findByID(id);
+    if (!todo) {
+      return response.status(404).json({ error: "Todo not found" });
+    }
+
+    const updatedTodo = {
+      title: request.body.title ? request.body.title : todo.title,
+      description: request.body.description
+        ? request.body.description
+        : todo.description,
+    };
+
+    const result = await Todo.updateTodo(todo.id, updatedTodo);
+    response.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
 /*
 Method: PUT

@@ -56,4 +56,10 @@ todoSchema.statics.updateTodoStatus = function (id) {
   });
 };
 
+todoSchema.statics.updateTodo = function (id, updatedFields) {
+  return this.findById(id).then(() => {
+    return this.findByIdAndUpdate(id, updatedFields, { new: true }).exec();
+  });
+};
+
 module.exports = mongoose.model("Todo", todoSchema);

@@ -34,7 +34,7 @@ const updateTodoStatus = async (id, token) => {
     headers: { Authorization: `Bearer ${token}` },
   };
 
-  const response = await axios.put(`${baseUrl}/${id}`, {}, config);
+  const response = await axios.put(`${baseUrl}/complete/${id}`, {}, config);
   return response.data;
 };
 
@@ -47,10 +47,25 @@ const deleteTodo = async (id, token) => {
   return response.data;
 };
 
+const updateTodo = async (id, updatedTodo, token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  const response = await axios.put(
+    `${baseUrl}/update/${id}`,
+    updatedTodo,
+    config
+  );
+
+  return response.data;
+};
+
 export default {
   getTodos,
   getTodoById,
   createTodo,
   updateTodoStatus,
   deleteTodo,
+  updateTodo,
 };

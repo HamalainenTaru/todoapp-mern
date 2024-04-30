@@ -9,7 +9,11 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  useDisclosure,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
+  Button,
 } from "@chakra-ui/react";
 
 import { FaRegEdit, FaCheck, FaTimes } from "react-icons/fa";
@@ -17,18 +21,28 @@ import { MdDeleteOutline } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
 import todoService from "../services/todo.service";
 import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
 import TodoContext from "../global/TodoContext";
 
 export default function Todo({ todo }) {
   const { todos, setTodos } = useContext(TodoContext);
   const [fullTodo, setFullTodo] = useState(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { register, handleSubmit, watch } = useForm();
+
+  const editTodoData = watch();
+
+  const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false);
+
+  const onCloseDetailsModal = () => setIsOpenDetailsModal(false);
+  const onCloseEditModal = () => setIsOpenEditModal(false);
 
   const onTodoDetailsClick = async (id) => {
     const savedToken = localStorage.getItem("token");
     const fetchedTodo = await todoService.getTodoById(id, savedToken);
     setFullTodo(fetchedTodo);
-    onOpen();
+    setIsOpenDetailsModal(true);
   };
 
   const onTodoStatusChange = async (id) => {
@@ -41,6 +55,22 @@ export default function Todo({ todo }) {
     const savedToken = localStorage.getItem("token");
     await todoService.deleteTodo(id, savedToken);
     setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  const onUpdateTodo = async (id) => {
+    console.log(editTodoData, id);
+    const savedToken = localStorage.getItem("token");
+    const newTodo = {
+      title: editTodoData.title,
+      description: editTodoData.description,
+    };
+    try {
+      const result = await todoService.updateTodo(id, newTodo, savedToken);
+      setTodos(todos.map((todo) => (todo.id !== id ? todo : result)));
+      onCloseEditModal();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -92,7 +122,7 @@ export default function Todo({ todo }) {
             </span>
           </Tooltip>
           <Tooltip label="edit">
-            <span>
+            <span onClick={() => setIsOpenEditModal(true)}>
               <FaRegEdit
                 fill={todo.complited ? "black" : "white"}
                 size={"24px"}
@@ -119,7 +149,11 @@ export default function Todo({ todo }) {
         </Box>
       </HStack>
 
-      <Modal isOpen={isOpen} onClose={onClose} size={{ base: "sm", md: "lg" }}>
+      <Modal
+        isOpen={isOpenDetailsModal}
+        onClose={onCloseDetailsModal}
+        size={{ base: "sm", md: "lg" }}
+      >
         <ModalOverlay
           bg="blackAlpha.300"
           backdropFilter="blur(10px) hue-rotate(90deg)"
@@ -128,7 +162,6 @@ export default function Todo({ todo }) {
           <ModalHeader>Todo Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {/* Display the full todo details here */}
             {fullTodo && (
               <>
                 <Text>
@@ -147,6 +180,45 @@ export default function Todo({ todo }) {
                 </Text>
               </>
             )}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={isOpenEditModal}
+        onClose={onCloseEditModal}
+        size={{ base: "sm", md: "lg" }}
+      >
+        <ModalOverlay
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
+        <ModalContent>
+          <ModalHeader>Edit Todo</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack>
+              <FormControl>
+                <FormLabel>Title</FormLabel>
+                <Input placeholder={todo.title} {...register("title")} />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>Description</FormLabel>
+                <Input
+                  placeholder={todo.description}
+                  {...register("description")}
+                />
+              </FormControl>
+
+              <Button
+                onClick={() => handleSubmit(onUpdateTodo(todo.id))}
+                w={"100%"}
+              >
+                Update
+              </Button>
+              <Button w={"100%"}>Cancel</Button>
+            </VStack>
           </ModalBody>
         </ModalContent>
       </Modal>
