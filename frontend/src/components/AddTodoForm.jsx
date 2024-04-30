@@ -7,6 +7,7 @@ import {
   Button,
   FormErrorMessage,
   FormLabel,
+  useToast,
 } from "@chakra-ui/react";
 
 import todoService from "../services/todo.service";
@@ -19,6 +20,8 @@ export default function AddTodoForm() {
   const { user } = useContext(UserContext);
   const { todos, setTodos } = useContext(TodoContext);
   const [show, setShow] = useState(false);
+
+  const toast = useToast();
 
   const {
     register,
@@ -46,8 +49,21 @@ export default function AddTodoForm() {
         )
       );
       setShow(false);
+      toast({
+        title: "Todo succesfully created",
+        description: `${addedTodo.title} succesfully created`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Error",
+        description: error.response.data.error,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
     reset({ title: "", description: "" });
   };

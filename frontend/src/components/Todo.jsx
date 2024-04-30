@@ -14,6 +14,7 @@ import {
   Input,
   VStack,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 
 import { FaRegEdit, FaCheck, FaTimes } from "react-icons/fa";
@@ -30,13 +31,17 @@ export default function Todo({ todo }) {
 
   const { register, handleSubmit, watch } = useForm();
 
+  const toast = useToast();
+
   const editTodoData = watch();
 
   const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
 
   const onCloseDetailsModal = () => setIsOpenDetailsModal(false);
   const onCloseEditModal = () => setIsOpenEditModal(false);
+  const onCloseDeleteModal = () => setIsOpenDeleteModal(false);
 
   const onTodoDetailsClick = async (id) => {
     const savedToken = localStorage.getItem("token");
@@ -49,12 +54,39 @@ export default function Todo({ todo }) {
     const savedToken = localStorage.getItem("token");
     const updatedTodo = await todoService.updateTodoStatus(id, savedToken);
     setTodos(todos.map((todo) => (todo.id !== id ? todo : updatedTodo)));
+    toast({
+      title: "Status succesfully updated",
+      description: `${todo.title}'s status has been updated`,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
   };
+
+  const onTodoDeleteClick = () => setIsOpenDeleteModal(true);
 
   const onTodoDelete = async (id) => {
     const savedToken = localStorage.getItem("token");
-    await todoService.deleteTodo(id, savedToken);
-    setTodos(todos.filter((todo) => todo.id !== id));
+
+    try {
+      await todoService.deleteTodo(id, savedToken);
+      setTodos(todos.filter((todo) => todo.id !== id));
+      toast({
+        title: "Todo succesfully removed",
+        description: `${todo.title} is succesfully removed`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.response.data.error,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const onUpdateTodo = async (id) => {
@@ -68,8 +100,21 @@ export default function Todo({ todo }) {
       const result = await todoService.updateTodo(id, newTodo, savedToken);
       setTodos(todos.map((todo) => (todo.id !== id ? todo : result)));
       onCloseEditModal();
+      toast({
+        title: "Todo succesfully updated",
+        description: `${todo.title} is succesfully updated`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Error",
+        description: error.response.data.error,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -130,7 +175,7 @@ export default function Todo({ todo }) {
             </span>
           </Tooltip>
           <Tooltip label="delete">
-            <span onClick={() => onTodoDelete(todo.id)}>
+            <span onClick={onTodoDeleteClick}>
               <MdDeleteOutline
                 fill={todo.complited ? "black" : "white"}
                 size={"24px"}
@@ -218,6 +263,32 @@ export default function Todo({ todo }) {
                 Update
               </Button>
               <Button w={"100%"}>Cancel</Button>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={isOpenDeleteModal}
+        onClose={onCloseDeleteModal}
+        size={{ base: "sm", md: "lg" }}
+      >
+        <ModalOverlay
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
+        <ModalContent>
+          <ModalHeader>Delete Todo</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack>
+              <Text>Are you sure you want to delete {todo.title}?</Text>
+              <Button onClick={() => onTodoDelete(todo.id)} w={"100%"}>
+                Confirm
+              </Button>
+              <Button onClick={onCloseDeleteModal} w={"100%"}>
+                Cancel
+              </Button>
             </VStack>
           </ModalBody>
         </ModalContent>

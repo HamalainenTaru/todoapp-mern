@@ -7,6 +7,7 @@ import {
   InputGroup,
   FormErrorMessage,
   InputRightElement,
+  useToast,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useContext, useState } from "react";
@@ -22,6 +23,7 @@ export default function AuthenticationForm({ type, setTabIndex }) {
   });
 
   const navigate = useNavigate();
+  const toast = useToast();
 
   const {
     register,
@@ -48,6 +50,13 @@ export default function AuthenticationForm({ type, setTabIndex }) {
       window.localStorage.setItem("token", loggedInUser.token);
 
       navigate("/main");
+      toast({
+        title: "Succesfull login",
+        description: `succesfully logged in as ${loggedInUser.user.username}`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       if (error.response.data.errors) {
         for (const [key, message] of Object.entries(
@@ -56,7 +65,13 @@ export default function AuthenticationForm({ type, setTabIndex }) {
           setError(key, { type: "manual", message: message });
         }
       } else {
-        console.log(error);
+        toast({
+          title: "Error",
+          description: error.response.data.error,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       }
     }
   };
@@ -73,7 +88,13 @@ export default function AuthenticationForm({ type, setTabIndex }) {
       const savedUser = await authService.signup(user);
       setTabIndex(0);
 
-      console.log(savedUser);
+      toast({
+        title: "User succesfully created",
+        description: `Succesfully created user ${savedUser.username}`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       if (error.response.data.errors) {
         for (const [key, message] of Object.entries(
@@ -82,7 +103,13 @@ export default function AuthenticationForm({ type, setTabIndex }) {
           setError(key, { type: "manual", message: message });
         }
       } else {
-        console.log(error);
+        toast({
+          title: "Error",
+          description: error.response.data.error,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       }
     }
   };
