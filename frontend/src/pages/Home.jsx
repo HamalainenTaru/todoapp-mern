@@ -37,7 +37,7 @@ export default function Home() {
           alt="Todo List"
         />
 
-        <Stack>
+        <Stack w={"full"}>
           <CardBody>
             <Heading size="md">Welcome to Todo App</Heading>
 
