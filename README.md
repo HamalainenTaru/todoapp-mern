@@ -23,8 +23,35 @@
 
 ## Screenshots
 
+### Main page
+<p float="left">
+  <img src="/screenshots/mainpage1.png" width="300" />
+  <img src="/screenshots/mainpage2.png" width="300" /> 
+  <img src="/screenshots/mainpage3.png" width="300" /> 
+</p>
+
+
+
+### Formvalidation
+
 <p float="left">
   <img src="/screenshots/formvalidation1.png" width="300" />
   <img src="/screenshots/formvalidation2.png" width="300" /> 
   <img src="/screenshots/formvalidation3.png" width="300" /> 
 </p>
+
+### Modals
+<p float="left">
+  <img src="/screenshots/modal1.png" width="300" />
+  <img src="/screenshots/modal2.png" width="300" /> 
+ 
+</p>
+<p float="left">
+  <img src="/screenshots/modal3.png" width="300" />
+  <img src="/screenshots/modal4.png" width="300" /> 
+</p>
+
+### Toast
+ <img src="/screenshots/toast.png" width="300" />
+
+
