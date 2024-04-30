@@ -71,7 +71,10 @@ export default function NavBar() {
       </Box>
 
       <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
-        <ModalOverlay />
+        <ModalOverlay
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
         <ModalContent>
           <ModalHeader>My Profile</ModalHeader>
           <ModalCloseButton />

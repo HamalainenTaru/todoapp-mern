@@ -9,7 +9,6 @@ import {
   TabPanels,
   Image,
   Heading,
-  Text,
   Container,
 } from "@chakra-ui/react";
 import AuthenticationForm from "../components/AuthenticationForm";
@@ -41,11 +40,6 @@ export default function Home() {
         <Stack>
           <CardBody>
             <Heading size="md">Welcome to Todo App</Heading>
-
-            <Text py="2">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat,
-              deserunt.
-            </Text>
 
             <Tabs
               isFitted
