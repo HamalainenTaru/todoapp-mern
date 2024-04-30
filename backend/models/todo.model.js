@@ -13,6 +13,10 @@ const todoSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
@@ -27,6 +31,10 @@ todoSchema.set("toJSON", {
 
 todoSchema.statics.findByID = function (id) {
   return this.findById(id);
+};
+
+todoSchema.statics.findByUser = function (userId) {
+  return this.find({ user: userId });
 };
 
 todoSchema.statics.createTodo = function (todo) {

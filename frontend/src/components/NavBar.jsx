@@ -40,11 +40,7 @@ export default function NavBar() {
         </Text>
 
         <Menu>
-          <MenuButton
-            as={Button}
-            bg={"white"}
-            // rightIcon={<BiSolidChevronDown />}
-          >
+          <MenuButton as={Button} bg={"white"}>
             <Avatar
               size={"sm"}
               cursor={"pointer"}

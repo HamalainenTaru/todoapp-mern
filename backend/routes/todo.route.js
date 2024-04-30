@@ -4,6 +4,7 @@ const controller = require("../controllers/todo.controller");
 
 const router = express.Router();
 
-router.get("/", controller.test);
+router.get("/", controller.getAllTodosByUser);
+router.post("/", controller.createTodo);
 
 module.exports = router;

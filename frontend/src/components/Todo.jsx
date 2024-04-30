@@ -3,7 +3,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
 
-export default function Todo() {
+export default function Todo({ todo }) {
   return (
     <HStack
       bg={"teal.600"}
@@ -22,7 +22,7 @@ export default function Todo() {
       >
         <Tooltip label="Todo title" placement="top-start">
           <Text isTruncated fontWeight={"bold"}>
-            Lorem, ipsum dolor sit
+            {todo.title}
           </Text>
         </Tooltip>
       </Box>
