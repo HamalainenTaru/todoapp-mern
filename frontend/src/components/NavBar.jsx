@@ -8,15 +8,28 @@ import {
   MenuItem,
   MenuDivider,
   Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  VStack,
+  CircularProgress,
+  CircularProgressLabel,
 } from "@chakra-ui/react";
 import { useContext } from "react";
 import UserContext from "../global/UserContext";
 import { useNavigate } from "react-router-dom";
+import TodoContext from "../global/TodoContext";
 
 export default function NavBar() {
   const { user, setUser } = useContext(UserContext);
+  const { todos } = useContext(TodoContext);
 
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onLogout = () => {
     setUser(null);
@@ -50,12 +63,71 @@ export default function NavBar() {
           </MenuButton>
 
           <MenuList>
-            <MenuItem>My Profile</MenuItem>
+            <MenuItem onClick={onOpen}>My Profile</MenuItem>
             <MenuDivider />
             <MenuItem onClick={onLogout}>Logout</MenuItem>
           </MenuList>
         </Menu>
       </Box>
+
+      <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>My Profile</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack>
+              <Text>
+                <strong>Username: </strong>
+                {user.username}
+              </Text>
+              <Text>
+                <strong>Name: </strong>
+                {user.name}
+              </Text>
+
+              <Text>
+                <strong>Total todos: </strong>
+                {todos.length}
+              </Text>
+
+              <Text>
+                <strong>Pending todos: </strong>
+                {todos.filter((todo) => !todo.complited).length}
+              </Text>
+
+              <Text>
+                <strong>Complited todos: </strong>
+                {todos.filter((todo) => todo.complited).length}
+              </Text>
+
+              {todos.length > 0 && (
+                <>
+                  {todos.length > 0 && (
+                    <Text>
+                      <strong>Progress:</strong>
+                    </Text>
+                  )}
+                  <CircularProgress
+                    value={
+                      (todos.filter((todo) => todo.complited).length /
+                        todos.length) *
+                      100
+                    }
+                    color="green.400"
+                  >
+                    <CircularProgressLabel>{`${Math.round(
+                      (todos.filter((todo) => todo.complited).length /
+                        todos.length) *
+                        100
+                    )}%`}</CircularProgressLabel>
+                  </CircularProgress>
+                </>
+              )}
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

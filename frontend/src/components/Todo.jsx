@@ -262,7 +262,9 @@ export default function Todo({ todo }) {
               >
                 Update
               </Button>
-              <Button w={"100%"}>Cancel</Button>
+              <Button onClick={onCloseEditModal} w={"100%"}>
+                Cancel
+              </Button>
             </VStack>
           </ModalBody>
         </ModalContent>
