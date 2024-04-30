@@ -1,3 +1,3 @@
 # Todo App with MERN Stack
 
-![screenshot](formvalidation1.png)
+![screenshot](screenshots/formvalidation1.png)
