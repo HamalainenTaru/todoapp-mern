@@ -24,7 +24,7 @@
 ## Screenshots
 
 <p float="left">
-  <img src="/screenshots/formvalidation1.png" width="200" />
-  <img src="/screenshots/formvalidation2.png" width="200" /> 
-  <img src="/screenshots/formvalidation3.png" width="200" /> 
+  <img src="/screenshots/formvalidation1.png" width="300" />
+  <img src="/screenshots/formvalidation2.png" width="300" /> 
+  <img src="/screenshots/formvalidation3.png" width="300" /> 
 </p>
