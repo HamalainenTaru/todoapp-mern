@@ -109,9 +109,7 @@ const login = async (request, response, next) => {
       id: user.id,
     };
 
-    const token = jwt.sign(userForToken, config.JWT_SECRET, {
-      expiresIn: 60 * 60,
-    });
+    const token = jwt.sign(userForToken, config.JWT_SECRET);
     response.status(200).json({ token, user });
   } catch (error) {
     next(error);

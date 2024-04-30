@@ -38,4 +38,19 @@ const updateTodoStatus = async (id, token) => {
   return response.data;
 };
 
-export default { getTodos, getTodoById, createTodo, updateTodoStatus };
+const deleteTodo = async (id, token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  const response = await axios.delete(`${baseUrl}/${id}`, config);
+  return response.data;
+};
+
+export default {
+  getTodos,
+  getTodoById,
+  createTodo,
+  updateTodoStatus,
+  deleteTodo,
+};

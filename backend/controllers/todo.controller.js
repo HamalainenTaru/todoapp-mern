@@ -66,7 +66,22 @@ Method: DELETE
 Path: /api/todo/delete/:id
 Access: protected
 */
-const deleteTodo = async (request, response, next) => {};
+const deleteTodo = async (request, response, next) => {
+  try {
+    const id = request.params.id;
+    const todo = await Todo.findByID(id);
+
+    if (!todo) {
+      return response.status(404).json({ error: "Todo not found" });
+    }
+
+    await Todo.deleteTodo(todo.id);
+
+    response.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
 
 /*
 Method: PUT
@@ -83,8 +98,6 @@ Access: protected
 const markTodoAsComplited = async (request, response, next) => {
   try {
     const id = request.params.id;
-    const user = request.user;
-    console.log(user);
 
     const todo = await Todo.findByID(id);
     if (!todo) {
@@ -92,7 +105,6 @@ const markTodoAsComplited = async (request, response, next) => {
     }
 
     const updatedTodo = await Todo.updateTodoStatus(id);
-    console.log(updatedTodo);
     response.status(200).json(updatedTodo);
   } catch (error) {
     next(error);

@@ -29,6 +29,10 @@ todoSchema.set("toJSON", {
   },
 });
 
+todoSchema.statics.deleteTodo = function (id) {
+  return this.findByIdAndDelete(id);
+};
+
 todoSchema.statics.findByID = function (id) {
   return this.findById(id);
 };

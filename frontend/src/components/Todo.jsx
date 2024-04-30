@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit, FaCheck, FaTimes } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
 import todoService from "../services/todo.service";
@@ -33,10 +33,14 @@ export default function Todo({ todo }) {
 
   const onTodoStatusChange = async (id) => {
     const savedToken = localStorage.getItem("token");
-
     const updatedTodo = await todoService.updateTodoStatus(id, savedToken);
-    console.log(updatedTodo);
     setTodos(todos.map((todo) => (todo.id !== id ? todo : updatedTodo)));
+  };
+
+  const onTodoDelete = async (id) => {
+    const savedToken = localStorage.getItem("token");
+    await todoService.deleteTodo(id, savedToken);
+    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
   return (
@@ -45,6 +49,7 @@ export default function Todo({ todo }) {
         bg={todo.complited ? "gray.300" : "gray.500"}
         shadow={"lg"}
         rounded={"lg"}
+        flexDirection={{ base: "column", md: "row" }}
         p={4}
         justifyContent={"space-between"}
         opacity={todo.complited ? "50%" : "100%"}
@@ -68,13 +73,22 @@ export default function Todo({ todo }) {
           </Tooltip>
         </Box>
 
-        <Box display={"flex"} alignItems={"center"} gap={3}>
-          <Tooltip label={todo.complited ? "UnComplete" : "Complete"}>
+        <Box display={"flex"} alignItems={"center"} gap={{ base: 5, md: 3 }}>
+          <Tooltip
+            label={todo.complited ? "Mark uncompleted" : "Mark Completed"}
+          >
             <span onClick={() => onTodoStatusChange(todo.id)}>
-              <FaRegEdit
-                fill={todo.complited ? "black" : "white"}
-                size={"24px"}
-              />
+              {todo.complited ? (
+                <FaTimes
+                  fill={todo.complited ? "black" : "white"}
+                  size={"24px"}
+                />
+              ) : (
+                <FaCheck
+                  fill={todo.complited ? "black" : "white"}
+                  size={"24px"}
+                />
+              )}
             </span>
           </Tooltip>
           <Tooltip label="edit">
@@ -86,7 +100,7 @@ export default function Todo({ todo }) {
             </span>
           </Tooltip>
           <Tooltip label="delete">
-            <span>
+            <span onClick={() => onTodoDelete(todo.id)}>
               <MdDeleteOutline
                 fill={todo.complited ? "black" : "white"}
                 size={"24px"}
