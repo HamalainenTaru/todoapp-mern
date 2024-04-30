@@ -11,4 +11,22 @@ const getTodos = async (token) => {
   return response.data;
 };
 
-export default { getTodos };
+const getTodoById = async (id, token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  const response = await axios.get(`${baseUrl}/${id}`, config);
+  return response.data;
+};
+
+const createTodo = async (token, newTodo) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  const response = await axios.post(baseUrl, newTodo, config);
+  return response.data;
+};
+
+export default { getTodos, getTodoById, createTodo };

@@ -1,13 +1,10 @@
 const Todo = require("../models/todo.model");
 
 /*
+Method: GET
 Path: /api/todo
 Access: protected
 */
-const test = (request, response) => {
-  response.send(request.user);
-};
-
 const getAllTodosByUser = async (request, response, next) => {
   try {
     const user = request.user;
@@ -20,8 +17,33 @@ const getAllTodosByUser = async (request, response, next) => {
   }
 };
 
-const getTodoById = async (request, response, next) => {};
+/*
+Method: GET
+Path: /api/todo/:id
+Access: protected
+*/
+const getTodoById = async (request, response, next) => {
+  try {
+    const id = request.params.id;
+    const todo = await Todo.findByID(id).populate("user", {
+      username: 1,
+      name: 1,
+    });
 
+    if (!todo) {
+      return response.status(404).json({ error: "Todo not found" });
+    }
+    response.status(200).json(todo);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/*
+Method: POST
+Path: /api/todo
+Access: protected
+*/
 const createTodo = async (request, response, next) => {
   try {
     const { title, description } = request.body;
@@ -39,14 +61,28 @@ const createTodo = async (request, response, next) => {
   }
 };
 
+/*
+Method: DELETE
+Path: /api/todo/delete/:id
+Access: protected
+*/
 const deleteTodo = async (request, response, next) => {};
 
+/*
+Method: PUT
+Path: /api/todo/update/:id
+Access: protected
+*/
 const updateTodo = async (request, response, next) => {};
 
+/*
+Method: PUT
+Path: /api/todo/complete/:id
+Access: protected
+*/
 const markTodoAsComplited = async (request, response, next) => {};
 
 module.exports = {
-  test,
   getAllTodosByUser,
   getTodoById,
   createTodo,

@@ -1,10 +1,11 @@
 import { Box } from "@chakra-ui/react";
 import Todo from "./Todo";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import todoService from "../services/todo.service";
+import TodoContext from "../global/TodoContext";
 
 export default function Todos() {
-  const [todos, setTodos] = useState([]);
+  const { todos, setTodos } = useContext(TodoContext);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -14,14 +15,13 @@ export default function Todos() {
     };
 
     fetchTodos();
-  }, []);
+  }, [setTodos]);
 
   return (
     <Box p={2} display={"flex"} flexDirection={"column"} gap={2}>
       {todos.map((todo) => (
-        <Todo key={todo.id} todo={todo} />
+        <Todo key={todo.id} todo={todo} setTodos={setTodos} />
       ))}
-      {/* <Todo /> */}
     </Box>
   );
 }

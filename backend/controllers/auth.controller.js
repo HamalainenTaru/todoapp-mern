@@ -3,6 +3,7 @@ const User = require("../models/user.model");
 const config = require("../utils/config");
 
 /*
+Method:POST
 Path: /api/auth/signup
 Access: public
 */
@@ -75,6 +76,7 @@ const signup = async (request, response, next) => {
 };
 
 /*
+Method:POST
 Path: /api/auth/login
 Access: public
 */
