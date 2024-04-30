@@ -29,4 +29,13 @@ const createTodo = async (token, newTodo) => {
   return response.data;
 };
 
-export default { getTodos, getTodoById, createTodo };
+const updateTodoStatus = async (id, token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  const response = await axios.put(`${baseUrl}/${id}`, {}, config);
+  return response.data;
+};
+
+export default { getTodos, getTodoById, createTodo, updateTodoStatus };

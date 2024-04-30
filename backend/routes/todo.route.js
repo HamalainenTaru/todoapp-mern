@@ -7,5 +7,6 @@ const router = express.Router();
 router.get("/", controller.getAllTodosByUser);
 router.post("/", controller.createTodo);
 router.get("/:id", controller.getTodoById);
+router.put("/:id", controller.markTodoAsComplited);
 
 module.exports = router;

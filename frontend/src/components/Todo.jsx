@@ -16,27 +16,38 @@ import { FaRegEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
 import todoService from "../services/todo.service";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import TodoContext from "../global/TodoContext";
 
 export default function Todo({ todo }) {
+  const { todos, setTodos } = useContext(TodoContext);
   const [fullTodo, setFullTodo] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const onTodoClick = async (id) => {
+  const onTodoDetailsClick = async (id) => {
     const savedToken = localStorage.getItem("token");
     const fetchedTodo = await todoService.getTodoById(id, savedToken);
     setFullTodo(fetchedTodo);
     onOpen();
   };
 
+  const onTodoStatusChange = async (id) => {
+    const savedToken = localStorage.getItem("token");
+
+    const updatedTodo = await todoService.updateTodoStatus(id, savedToken);
+    console.log(updatedTodo);
+    setTodos(todos.map((todo) => (todo.id !== id ? todo : updatedTodo)));
+  };
+
   return (
     <>
       <HStack
-        bg={"teal.600"}
+        bg={todo.complited ? "gray.300" : "gray.500"}
         shadow={"lg"}
         rounded={"lg"}
         p={4}
         justifyContent={"space-between"}
+        opacity={todo.complited ? "50%" : "100%"}
       >
         <Box
           display={"flex"}
@@ -44,30 +55,51 @@ export default function Todo({ todo }) {
           alignItems={"center"}
           gap={2}
           overflow={"hidden"}
-          color={"white"}
+          color={todo.complited ? "black" : "white"}
         >
           <Tooltip label="Todo title" placement="top-start">
-            <Text isTruncated fontWeight={"bold"}>
+            <Text
+              isTruncated
+              fontWeight={"bold"}
+              textDecoration={todo.complited ? "line-through" : "none"}
+            >
               {todo.title}
             </Text>
           </Tooltip>
         </Box>
 
         <Box display={"flex"} alignItems={"center"} gap={3}>
+          <Tooltip label={todo.complited ? "UnComplete" : "Complete"}>
+            <span onClick={() => onTodoStatusChange(todo.id)}>
+              <FaRegEdit
+                fill={todo.complited ? "black" : "white"}
+                size={"24px"}
+              />
+            </span>
+          </Tooltip>
           <Tooltip label="edit">
             <span>
-              <FaRegEdit fill="white" size={"24px"} />
+              <FaRegEdit
+                fill={todo.complited ? "black" : "white"}
+                size={"24px"}
+              />
             </span>
           </Tooltip>
           <Tooltip label="delete">
             <span>
-              <MdDeleteOutline fill="white" size={"24px"} />
+              <MdDeleteOutline
+                fill={todo.complited ? "black" : "white"}
+                size={"24px"}
+              />
             </span>
           </Tooltip>
 
           <Tooltip label="view">
-            <span onClick={() => onTodoClick(todo.id)}>
-              <TbListDetails fill="white" size={"24px"} />
+            <span onClick={() => onTodoDetailsClick(todo.id)}>
+              <TbListDetails
+                fill={todo.complited ? "black" : "white"}
+                size={"24px"}
+              />
             </span>
           </Tooltip>
         </Box>
@@ -93,7 +125,7 @@ export default function Todo({ todo }) {
                 </Text>
                 <Text>
                   <strong>Status: </strong>
-                  {fullTodo.completed ? "Complited" : "Pending"}
+                  {fullTodo.complited ? "Completed" : "Pending"}
                 </Text>
                 <Text>
                   <strong>User: </strong>

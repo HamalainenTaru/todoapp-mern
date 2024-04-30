@@ -42,4 +42,14 @@ todoSchema.statics.createTodo = function (todo) {
   return newTodo.save();
 };
 
+todoSchema.statics.updateTodoStatus = function (id) {
+  return this.findById(id).then((todo) => {
+    return this.findByIdAndUpdate(
+      id,
+      { complited: !todo.complited },
+      { new: true }
+    ).exec();
+  });
+};
+
 module.exports = mongoose.model("Todo", todoSchema);
