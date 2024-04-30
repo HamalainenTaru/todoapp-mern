@@ -25,7 +25,7 @@ todoSchema.set("toJSON", {
   },
 });
 
-todoSchema.static.findByID = function (id) {
+todoSchema.statics.findByID = function (id) {
   return this.findById(id);
 };
 
