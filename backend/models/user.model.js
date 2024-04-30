@@ -50,6 +50,10 @@ userSchema.statics.findByUsername = function (username) {
   return this.findOne({ username: username });
 };
 
+userSchema.statics.findByID = function (id) {
+  return this.findById(id);
+};
+
 userSchema.statics.validatePassword = function (password) {
   const passworRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

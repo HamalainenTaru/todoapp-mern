@@ -2,6 +2,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const config = require("../utils/config");
 
+/*
+Path: /api/auth/signup
+Access: public
+*/
 const signup = async (request, response, next) => {
   try {
     const { name, username, password, confirmPassword } = request.body;
@@ -70,6 +74,10 @@ const signup = async (request, response, next) => {
   }
 };
 
+/*
+Path: /api/auth/login
+Access: public
+*/
 const login = async (request, response, next) => {
   try {
     const { username, password } = request.body;

@@ -45,6 +45,7 @@ export default function AuthenticationForm({ type, setTabIndex }) {
       const loggedInUser = await authService.login(user);
       setUser(loggedInUser);
       window.localStorage.setItem("user", JSON.stringify(loggedInUser.user));
+      window.localStorage.setItem("token", JSON.stringify(loggedInUser.token));
 
       navigate("/main");
     } catch (error) {

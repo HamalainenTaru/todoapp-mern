@@ -21,42 +21,45 @@ export default function NavBar() {
   const onLogout = () => {
     setUser(null);
     window.localStorage.removeItem("user");
+    window.localStorage.removeItem("token");
     navigate("/");
   };
   return (
-    <Box
-      display={"flex"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
-      p={"10px 15px 10px 15px"}
-      w={"100%"}
-      shadow={"lg"}
-      rounded={"lg"}
-    >
-      <Text fontSize={"xl"}>
-        Welcome <span style={{ fontWeight: "bold" }}>{user.username}</span>
-      </Text>
+    <Box shadow={"lg"} rounded={"lg"}>
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        p={"10px 15px 10px 15px"}
+        w={"100%"}
+        maxW={{ base: "100%", lg: "1240px" }}
+        mx={"auto"}
+      >
+        <Text fontSize={"xl"}>
+          Welcome <span style={{ fontWeight: "bold" }}>{user.username}</span>
+        </Text>
 
-      <Menu>
-        <MenuButton
-          as={Button}
-          bg={"white"}
-          // rightIcon={<BiSolidChevronDown />}
-        >
-          <Avatar
-            size={"sm"}
-            cursor={"pointer"}
-            name="test"
-            src={user.profilePic}
-          />
-        </MenuButton>
+        <Menu>
+          <MenuButton
+            as={Button}
+            bg={"white"}
+            // rightIcon={<BiSolidChevronDown />}
+          >
+            <Avatar
+              size={"sm"}
+              cursor={"pointer"}
+              name="test"
+              src={user.profilePic}
+            />
+          </MenuButton>
 
-        <MenuList>
-          <MenuItem>My Profile</MenuItem>
-          <MenuDivider />
-          <MenuItem onClick={onLogout}>Logout</MenuItem>
-        </MenuList>
-      </Menu>
+          <MenuList>
+            <MenuItem>My Profile</MenuItem>
+            <MenuDivider />
+            <MenuItem onClick={onLogout}>Logout</MenuItem>
+          </MenuList>
+        </Menu>
+      </Box>
     </Box>
   );
 }

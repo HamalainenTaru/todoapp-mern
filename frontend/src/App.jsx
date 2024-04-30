@@ -1,7 +1,6 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Main from "./pages/Main";
-import { Container } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import UserContext from "./global/UserContext";
 
@@ -26,12 +25,10 @@ export default function App() {
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
-      <Container maxW={{ base: "100%", lg: "1140px" }} p={2}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/main" element={<Main />} />
-        </Routes>
-      </Container>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/main" element={<Main />} />
+      </Routes>
     </UserContext.Provider>
   );
 }
